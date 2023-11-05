@@ -1,7 +1,6 @@
 from django.conf import settings
-from django.http import JsonResponse
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets, generics
+from rest_framework import viewsets
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 import stripe
@@ -19,6 +18,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
+        """Создание платежа"""
         payment = serializer.save()
         payment.user = self.request.user
         payment.save()
@@ -35,6 +35,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
         new_pay.save()
 
     def retrieve_payment(self, payment_id):
+        """Получение платежа"""
         stripe.api_key = settings.STRIPE_KEY
         payment_intent = stripe.PaymentIntent.retrieve(payment_id.id,)
         return payment_intent

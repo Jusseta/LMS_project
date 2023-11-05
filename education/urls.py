@@ -4,7 +4,7 @@ from education.apps import EducationConfig
 from education.views.course import CourseViewSet
 from education.views.lesson import *
 from education.views.payment import PaymentViewSet
-from education.views.subscription import SubscriptionCreateAPIView, SubscriptionDestroyAPIView
+from education.views.subscription import SubscriptionCreateAPIView, SubscriptionDestroyAPIView, SubscriptionListAPIView
 
 app_name = EducationConfig.name
 
@@ -17,6 +17,7 @@ urlpatterns = [
     path('lesson_delete/<int:pk>/', LessonDestroyAPIView.as_view(), name='lesson_delete'),
 
     path('subscription_create/', SubscriptionCreateAPIView.as_view(), name='subscription_create'),
+    path('subscriptions/', SubscriptionListAPIView.as_view(), name='subscriptions'),
     path('subscription_delete/<int:pk>/', SubscriptionDestroyAPIView.as_view(), name='subscription_delete'),
 ]
 

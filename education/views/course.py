@@ -4,6 +4,7 @@ from education.models import Course
 from education.paginators import CoursePaginator
 from education.permissions import CoursePermission
 from education.serializers.course import CourseSerializer
+from education.tasks import send_update_course_message
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -18,6 +19,11 @@ class CourseViewSet(viewsets.ModelViewSet):
         new_course = serializer.save()
         new_course.owner = self.request.user
         new_course.save()
+
+    def perform_update(self, serializer):
+        upd_course = serializer.save()
+        if upd_course:
+            send_update_course_message.delay(upd_course.id)
 
     def get_queryset(self):
         """Пользователь видит только свои курсы, персонал - все"""
