@@ -40,15 +40,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'drf_yasg',
 
     'rest_framework',
     'rest_framework_simplejwt',
     'django_filters',
+    'django_celery_beat',
 
     'users',
     'education',
-
-
 ]
 
 MIDDLEWARE = [
@@ -148,3 +148,28 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=5),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
+
+STRIPE_KEY = os.getenv('STRIPE_KEY')
+
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_TIMEZONE = "Australia/Tasmania"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+CELERY_BEAT_SCHEDULE = {
+    'task-name': {
+        'task': 'users.tasks.block_inactive_user',
+        'schedule': timedelta(days=1),
+    },
+}
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+SERVER_EMAIL = EMAIL_HOST_USER
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_USE_SSL = True
+EMAIL_USE_TLS = False
+EMAIL_ADMIN = EMAIL_HOST_USER
